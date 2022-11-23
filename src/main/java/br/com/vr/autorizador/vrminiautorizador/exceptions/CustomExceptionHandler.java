@@ -1,10 +1,6 @@
 package br.com.vr.autorizador.vrminiautorizador.exceptions;
 
 
-
-import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
-
-
 import java.util.Collections;
 import java.util.stream.Collectors;
 
@@ -34,6 +30,7 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler{
 	private static final String BAD_REQUEST = "BAD_REQUEST";
 	private static final String NOT_FOUND = "NOT_FOUND";
 	private static final String UNAUTHORIZED = "UNAUTHORIZED";
+	private static final String UNPROCESSABLE_ENTITY = "UNPROCESSABLE_ENTITY";
 	
 	private ObjectMapper mapper = new ObjectMapper();
 	
@@ -123,4 +120,12 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler{
 		ErrorResponse error = new ErrorResponse(UNAUTHORIZED, Collections.singletonList(ex.getLocalizedMessage()));
 		return new ResponseEntity<>(error, HttpStatus.UNAUTHORIZED);
 	}
+	
+	
+	@ExceptionHandler(UnprocessableException.class)
+	public final ResponseEntity<ErrorResponse> handleUnprocessableException(UnprocessableException ex, WebRequest request) {
+		ErrorResponse error = new ErrorResponse(UNPROCESSABLE_ENTITY, Collections.singletonList(ex.getLocalizedMessage()));
+		return new ResponseEntity<>(error, HttpStatus.UNPROCESSABLE_ENTITY);
+	}
+	
 }
