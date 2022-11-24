@@ -14,6 +14,7 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
+import org.springframework.data.crossstore.ChangeSetPersister.NotFoundException;
 import org.springframework.test.context.ActiveProfiles;
 
 import br.com.vr.autorizador.vrminiautorizador.converter.CartaoConverter;
@@ -81,7 +82,7 @@ public class CartaoBusinessTest {
 
 	
 	@Test
-	public void testRealizarTransacaoSucess() {
+	public void testRealizarTransacaoSucess() throws NotFoundException {
 		TransacaoDTO dockMock =  Helper.buildGenericTransacaoDTO();
 		dockMock.setNumeroCartao(numeroCartao);		
 		Optional<Cartao>  dockMockOptional = Optional.of(Helper.buildGenericCartao());

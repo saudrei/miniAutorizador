@@ -3,6 +3,7 @@ package br.com.vr.autorizador.vrminiautorizador.business;
 import java.math.BigDecimal;
 import java.util.Optional;
 
+import org.springframework.data.crossstore.ChangeSetPersister.NotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -39,7 +40,7 @@ public class CartaoBusiness {
 		return cartaoConverter.convertCartaoToCartaoOutDTO(cartaoService.save(cartaoConverter.convertCartaoDTOToCartao(cartaoDTO)));
 	}
 	
-	public void realizarTransacao(TransacaoDTO transacaoDTO) {
+	public String realizarTransacao(TransacaoDTO transacaoDTO) throws NotFoundException {
 		Optional<Cartao> cartao = cartaoService.findById(transacaoDTO.getNumeroCartao());
 		if (cartao.isPresent()) {
 			validatorCartaoSenhaInvalid(cartao,transacaoDTO);
@@ -48,6 +49,8 @@ public class CartaoBusiness {
 		} else {
 			validatorCartaoNotExist(transacaoDTO.getNumeroCartao());
 		}
+		//return "\"OK\"";
+		return "OK";
 	}
 
 

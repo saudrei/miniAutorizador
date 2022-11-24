@@ -50,16 +50,13 @@ public class CartaoController {
 		return ResponseEntity.status(HttpStatus.OK).body(cartaoBusiness.obterSaldo(numeroCartao));
 	}
 	
-	@PostMapping("/transacoes")
-	public ResponseEntity<String> realizarTransacao(@RequestBody @Valid TransacaoDTO transacaoDTO) {
-		ResponseEntity<String> response = null;
+	@PostMapping(path="/transacoes")
+	public ResponseEntity<String> realizarTransacao(@RequestBody @Valid TransacaoDTO transacaoDTO) throws Exception {
 		try {
-			cartaoBusiness.realizarTransacao(transacaoDTO);
-			response = new ResponseEntity<String>("OK", HttpStatus.CREATED);
+			return new ResponseEntity<String>(cartaoBusiness.realizarTransacao(transacaoDTO), HttpStatus.CREATED);
 		} catch (UnprocessableException ex) {
-			response = new ResponseEntity(ex.getMessage(), HttpStatus.UNPROCESSABLE_ENTITY);
+			return new ResponseEntity<String>(ex.getMessage(), HttpStatus.UNPROCESSABLE_ENTITY);
 		}
-		return response;
 	}
 
 }
