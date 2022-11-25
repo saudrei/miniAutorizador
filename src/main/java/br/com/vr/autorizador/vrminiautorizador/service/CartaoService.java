@@ -2,6 +2,7 @@ package br.com.vr.autorizador.vrminiautorizador.service;
 
 
 
+import java.math.BigDecimal;
 import java.util.Optional;
 
 import org.springframework.stereotype.Service;
@@ -35,6 +36,10 @@ public class CartaoService {
 	
 	public void update(Cartao cartaoToUpdate) {
 		repository.save(cartaoToUpdate);
+	}
+
+	public Optional<BigDecimal> obterSaldo(String numeroCartao) {		
+		return repository.obterSaldoDoCartao(numeroCartao);
 	}
 	
 

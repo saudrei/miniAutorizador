@@ -2,7 +2,6 @@ package br.com.vr.autorizador.vrminiautorizador.business;
 
 import static org.junit.Assert.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.mockito.Mockito.when;
 
 import java.math.BigDecimal;
@@ -22,7 +21,6 @@ import br.com.vr.autorizador.vrminiautorizador.domain.Cartao;
 import br.com.vr.autorizador.vrminiautorizador.dto.CartaoDTO;
 import br.com.vr.autorizador.vrminiautorizador.dto.CartaoOutDTO;
 import br.com.vr.autorizador.vrminiautorizador.dto.TransacaoDTO;
-import br.com.vr.autorizador.vrminiautorizador.exceptions.RecordNotFoundException;
 import br.com.vr.autorizador.vrminiautorizador.exceptions.UnprocessableException;
 import br.com.vr.autorizador.vrminiautorizador.helper.Helper;
 import br.com.vr.autorizador.vrminiautorizador.service.CartaoService;
@@ -95,13 +93,12 @@ public class CartaoBusinessTest {
 	public void testRealizarTransacaoCartaoNaoExist() {
 		TransacaoDTO dockMock =  Helper.buildGenericTransacaoDTO();
 		Optional<Cartao>  dockMockOptional = Optional.of(Helper.buildGenericCartao());
-		dockMockOptional.get().setNumeroCartao(numeroCartao);
+		dockMockOptional.get().setNumeroCartao("6549873025634509");
 		when(service.findById(numeroCartao)).thenReturn(dockMockOptional);
 		try{
 			business.realizarTransacao(dockMock);
 		}catch (Exception ex){	
 			assertEquals(UnprocessableException.CARTAO_INEXISTENTE , ex.getMessage());
-			assertInstanceOf(UnprocessableException.class, ex);
 		}
 		
 	}
@@ -118,7 +115,6 @@ public class CartaoBusinessTest {
 			business.realizarTransacao(dockMock);
 		}catch (Exception ex){	
 			assertEquals(UnprocessableException.SALDO_INSUFICIENTE, ex.getMessage());
-			assertInstanceOf(UnprocessableException.class, ex);
 		}
 		
 	}
@@ -135,7 +131,6 @@ public class CartaoBusinessTest {
 			business.realizarTransacao(dockMock);
 		}catch (Exception ex){	
 			assertEquals(UnprocessableException.SENHA_INVALIDA, ex.getMessage());
-			assertInstanceOf(UnprocessableException.class, ex);
 		}
 		
 	}
@@ -145,15 +140,9 @@ public class CartaoBusinessTest {
 		Cartao dockMock =  Helper.buildGenericCartao();
 		dockMock.setNumeroCartao(numeroCartao);
 		BigDecimal saldoIn = dockMock.getSaldo();
-		Optional<Cartao>  dockMockOptional = Optional.of(dockMock);
-		when(service.findById(numeroCartao)).thenReturn(dockMockOptional);
-		BigDecimal saldoOut = business.obterSaldo(numeroCartao);
-		assertEquals(saldoIn, saldoOut);
+		when(service.obterSaldo(numeroCartao)).thenReturn(Optional.of(new BigDecimal(500)));
+		Optional<BigDecimal> saldoOut = business.obterSaldo(numeroCartao);
+		assertEquals(Optional.of(saldoIn), saldoOut);
 	}
 	
-	@Test(expected = RecordNotFoundException.class)
-	public void testObterSaldoCartaoNaoExist() {
-		when(service.findById(numeroCartao)).thenReturn( Optional.empty());
-       	business.obterSaldo(numeroCartao);
-	}
 }

@@ -43,6 +43,8 @@ public class BatchConfiguration {
     	
     	return new HikariDataSource(dataSourceConfig);
     }
+	
+	
 
 	@Bean
 	public NamedParameterJdbcTemplate jdbcNamedTemplate(DataSource dataSource) {

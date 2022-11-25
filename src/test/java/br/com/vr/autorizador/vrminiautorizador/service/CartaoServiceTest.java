@@ -57,5 +57,15 @@ public class CartaoServiceTest {
 		verify(repository).save(Mockito.any());
 	}
 	
+	
+	@Test
+	public void testObterSaldo() {
+		Cartao dockMock = Helper.buildGenericCartao();
+		when(repository.obterSaldoDoCartao(dockMock.getNumeroCartao())).thenReturn(Optional.of(dockMock.getSaldo()));
+		service.obterSaldo(dockMock.getNumeroCartao());
+		verify(repository).obterSaldoDoCartao(dockMock.getNumeroCartao());
+	}
+	
+	
 
 }

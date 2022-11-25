@@ -1,6 +1,7 @@
 package br.com.vr.autorizador.vrminiautorizador.controller;
 
 import java.math.BigDecimal;
+import java.util.Optional;
 
 import javax.validation.Valid;
 
@@ -47,7 +48,8 @@ public class CartaoController {
 	
 	@GetMapping("/cartoes/{numeroCartao}")
 	public ResponseEntity<BigDecimal> obterSaldo(@PathVariable(name = "numeroCartao") String numeroCartao) {
-		return ResponseEntity.status(HttpStatus.OK).body(cartaoBusiness.obterSaldo(numeroCartao));
+		Optional<BigDecimal> saldo = cartaoBusiness.obterSaldo(numeroCartao);
+		return saldo.isPresent() ? new ResponseEntity<BigDecimal>(saldo.get(), HttpStatus.OK) : ResponseEntity.notFound().build();
 	}
 	
 	@PostMapping(path="/transacoes")

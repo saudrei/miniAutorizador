@@ -47,5 +47,29 @@ public class Helper {
                 .valor(new BigDecimal(300))
                 .build();
 	}
+	
+	public static TransacaoDTO buildGenericCartaoInexistenteTransacaoDTO() {
+        return TransacaoDTO.builder()
+                .numeroCartao("6549873025634599")
+                .senhaCartao("1234")
+                .valor(new BigDecimal(300))
+                .build();
+	}
+	
+	public static TransacaoDTO buildGenericSenhaInvalidaTransacaoDTO() {
+        return TransacaoDTO.builder()
+                .numeroCartao("6549873025634501")
+                .senhaCartao("12345")
+                .valor(new BigDecimal(300))
+                .build();
+	}
+	
+	public static TransacaoDTO buildGenericSaldoInsuficienteTransacaoDTO() {
+        return TransacaoDTO.builder()
+                .numeroCartao("6549873025634501")
+                .senhaCartao("1234")
+                .valor(new BigDecimal(99999))
+                .build();
+	}
 
 }

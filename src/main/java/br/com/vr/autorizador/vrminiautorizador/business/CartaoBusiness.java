@@ -12,9 +12,8 @@ import br.com.vr.autorizador.vrminiautorizador.domain.Cartao;
 import br.com.vr.autorizador.vrminiautorizador.dto.CartaoDTO;
 import br.com.vr.autorizador.vrminiautorizador.dto.CartaoOutDTO;
 import br.com.vr.autorizador.vrminiautorizador.dto.TransacaoDTO;
-import br.com.vr.autorizador.vrminiautorizador.exceptions.RecordNotFoundException;
-import br.com.vr.autorizador.vrminiautorizador.exceptions.UnprocessableException;
 import br.com.vr.autorizador.vrminiautorizador.service.CartaoService;
+import br.com.vr.autorizador.vrminiautorizador.validate.ValidateFactory;
 import lombok.extern.slf4j.Slf4j;
 
 
@@ -24,8 +23,6 @@ public class CartaoBusiness {
 	
 	private final CartaoService cartaoService;
 	private final CartaoConverter cartaoConverter;
-	
-
 
 	public CartaoBusiness(CartaoService cartaoService,CartaoConverter cartaoConverter) {
 		super();
@@ -41,63 +38,31 @@ public class CartaoBusiness {
 	}
 	
 	public String realizarTransacao(TransacaoDTO transacaoDTO) throws NotFoundException {
-		Optional<Cartao> cartao = cartaoService.findById(transacaoDTO.getNumeroCartao());
-		if (cartao.isPresent()) {
-			validatorCartaoSenhaInvalid(cartao,transacaoDTO);
-			validatorInsufficientFunds(cartao,transacaoDTO);
-			newBalanceCartao(cartao,transacaoDTO);
-		} else {
-			validatorCartaoNotExist(transacaoDTO.getNumeroCartao());
-		}
-		//return "\"OK\"";
+		Optional<Cartao> cartaoOptional = cartaoService.findById(transacaoDTO.getNumeroCartao());
+		Cartao cartao = cartaoOptional.orElse(null);
+		new ValidateFactory().validateTransacao().validateRule(cartao, transacaoDTO);
+		novoSaldoCartao(cartao,transacaoDTO);
 		return "OK";
 	}
 
 
-	private void newBalanceCartao(Optional<Cartao> cartao, TransacaoDTO transacaoDTO) {
-        BigDecimal novoSaldo = cartao.get().getSaldo();
+	private void novoSaldoCartao(Cartao cartao, TransacaoDTO transacaoDTO) {
+        BigDecimal novoSaldo = cartao.getSaldo();
         novoSaldo = novoSaldo.subtract(transacaoDTO.getValor());
-        cartao.get().setSaldo(novoSaldo);
-        cartaoService.save(cartao.get());	
-        log.info(cartao.get().getNumeroCartao().toString() + "|" +  transacaoDTO.getValor());
+        cartao.setSaldo(novoSaldo);
+        cartaoService.save(cartao);	
+        log.info(cartao.getNumeroCartao().toString() + "|" +  transacaoDTO.getValor());
 	}
 
 
 	private void validatorCartaoExist(Cartao entity) {
-		Optional<Cartao> validatorCartao = cartaoService.findById(entity.getNumeroCartao());
-		if(validatorCartao.isPresent()) {
-			log.info(entity.getNumeroCartao().toString() + "|" +  UnprocessableException.CARTAO_EXISTENTE);
-			throw new UnprocessableException(UnprocessableException.CARTAO_EXISTENTE); 
-		}
+		Cartao validatorCartao = cartaoService.findById(entity.getNumeroCartao()).orElse(null);
+		new ValidateFactory().validateNovoCartao().validateRule(entity, validatorCartao);
+
 	}
 	
-	private void validatorCartaoNotExist(String numeroCartao) {
-		log.info(numeroCartao + "|" + UnprocessableException.CARTAO_INEXISTENTE);
-		throw new UnprocessableException(UnprocessableException.CARTAO_INEXISTENTE); 
-	}
-	
-	private void validatorCartaoSenhaInvalid(Optional<Cartao> cartao, TransacaoDTO transacaoDTO) {
-        if(!cartao.get().getSenha().equals(transacaoDTO.getSenhaCartao())){
-        	log.info(cartao.get().getNumeroCartao().toString() + "|" + UnprocessableException.SENHA_INVALIDA);
-        	throw new UnprocessableException(UnprocessableException.SENHA_INVALIDA);
-        }
-	}
-	
-	private void validatorInsufficientFunds(Optional<Cartao> cartao, TransacaoDTO transacaoDTO) {
-        if(transacaoDTO.getValor().compareTo(cartao.get().getSaldo()) == 1){
-        	log.info(cartao.get().getNumeroCartao().toString() + "| Saldo:" + cartao.get().getSaldo() + "|Valor: " + transacaoDTO.getValor() + "|" + UnprocessableException.SALDO_INSUFICIENTE);
-            throw new UnprocessableException(UnprocessableException.SALDO_INSUFICIENTE);
-        }
-	}
-
-
-	public BigDecimal obterSaldo(String numeroCartao) {
-        Optional<Cartao> cartao = cartaoService.findById(numeroCartao);
-        if(!cartao.isPresent()) {
-        	throw new RecordNotFoundException();
-        }
-       	return cartao.get().getSaldo();
-
+	public Optional<BigDecimal> obterSaldo(String numeroCartao) {
+       	return cartaoService.obterSaldo(numeroCartao);
 	}
 
 }
