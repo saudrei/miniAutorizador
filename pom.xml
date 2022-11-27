@@ -11,8 +11,8 @@
 	<groupId>br.com.vr.autorizador</groupId>
 	<artifactId>vr-mini-autorizador</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>vr-mini-autorizador</name>
-	<description>Demo project for Spring Boot</description>
+	<name>autorizador</name>
+	<description>Mini autoizador VR</description>
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>

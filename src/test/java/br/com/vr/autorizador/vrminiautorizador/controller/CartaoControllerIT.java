@@ -32,7 +32,7 @@ import br.com.vr.autorizador.vrminiautorizador.repository.CartaoRepository;
 
 @SpringBootTest
 @AutoConfigureMockMvc
-@ActiveProfiles("staging")
+@ActiveProfiles("integration")
 @Sql(value = "/clean-database.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 @TestMethodOrder(OrderAnnotation.class)
