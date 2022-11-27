@@ -58,7 +58,7 @@ Iniciar o projeto
 
 ### Testes Unitarios
 
-> ./mvnw  test -Pintegration-test
+> ./mvnw  test -Pintegration
 
 ### REST
 O autorizador utliza uma interface rest para comunicação com os seguintes endpoints
