@@ -34,8 +34,6 @@ Sendo assim temos a divisão do projeto nas seguintes camadas:
 *** Configurar variaveis de ambiente
 
 ### Comandos (Linux)
-
-### Comandos (Linux)
 Clonar projeto em uma pasta
 > git clone https://github.com/saudrei/miniAutorizador.git
 
@@ -54,11 +52,11 @@ Iniciar o projeto
  ### Testes Integracao
 
 > cd autorizador
-> ./mvnw  test -Punit-test
+> ./mvnw  test t-Pintegration
 
 ### Testes Unitarios
 
-> ./mvnw  test -Pintegration
+> ./mvnw  test -Punit-tes
 
 ### REST
 O autorizador utliza uma interface rest para comunicação com os seguintes endpoints
